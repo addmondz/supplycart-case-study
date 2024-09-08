@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, onMounted, onUnmounted } from 'vue';
+import { ref, defineProps, defineEmits, onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
     modelValue: String,
@@ -57,6 +57,10 @@ const closeDropdown = () => open.value = false;
 const handleClickOutside = e => {
     if (open.value && !e.target.closest('.relative')) closeDropdown();
 };
+
+watch(() => props.modelValue, (newValue) => {
+    selectedOption.value = newValue || 'Select ' + props.label;
+});
 
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);

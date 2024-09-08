@@ -1,16 +1,16 @@
 <template>
 
-    <Head title="Orders" />
+    <Head title="Activity Log" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Orders</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Activity Log</h2>
         </template>
         <div class="relative min-h-screen">
             <div class="pb-36">
                 <div class="py-12" v-if="apiResponse">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div v-if="orderData.length" class="grid md:grid-cols gap-4 mb-5">
-                            <OrderListTemplate v-for="order in orderData" :key="order.id" :order="order" />
+                        <div v-if="activityData.length" class="grid md:grid-cols gap-4 mb-5">
+                            <ActivityLogListTemplate v-for="data in activityData" :key="data.id" :data="data" />
                         </div>
                         <div v-else>
                             <NotFound />
@@ -44,13 +44,13 @@ import axios from 'axios';
 import { ref, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import OrderListTemplate from '@/Components/OrderListTemplate.vue';
 import NotFound from '@/Components/Icons/NotFound.vue';
+import ActivityLogListTemplate from '@/Components/ActivityLogListTemplate.vue';
 import { apiBaseUrl } from '@/Helpers/helpers.js';
 
-const orderData = ref([]);
+const activityData = ref([]);
 const error = ref(null);
-const apiUrl = apiBaseUrl + 'api/order';
+const apiUrl = apiBaseUrl + 'api/activity-log';
 const limit = ref(10);
 const currentPage = ref(1);
 const lastPage = ref(0);
@@ -59,7 +59,7 @@ const apiResponse = ref(null);
 const fetchOrders = async (page = 1) => {
     try {
         const { data } = await axios.get(`${apiUrl}?limit=${limit.value}&page=${page}`);
-        orderData.value = data.data;
+        activityData.value = data.data;
         apiResponse.value = data;
         lastPage.value = data.last_page;
     } catch (err) {

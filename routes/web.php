@@ -26,6 +26,10 @@ Route::get('/orders', function () {
     return Inertia::render('Orders');
 })->middleware(['auth', 'verified'])->name('orders');
 
+Route::get('/activity-log', function () {
+    return Inertia::render('ActivityLog');
+})->middleware(['auth', 'verified'])->name('activity_log');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

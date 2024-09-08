@@ -52,6 +52,7 @@ import { Head } from '@inertiajs/vue3';
 import ProductListTemplate from '@/Components/ProductListTemplate.vue';
 import NotFound from '@/Components/Icons/NotFound.vue';
 import FilterDropdown from '@/Components/FilterDropdown.vue';
+import { apiBaseUrl } from '@/Helpers/helpers.js';
 
 const productData = ref([]);
 const categoryData = ref([]);
@@ -63,7 +64,6 @@ const apiResponse = ref(null);
 const limit = ref(9);
 const currentPage = ref(1);
 const lastPage = ref(0);
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const apiUrl = apiBaseUrl + 'api/product';
 
 // Fetch products with filters applied

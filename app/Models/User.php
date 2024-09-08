@@ -20,6 +20,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'membership_type_id',
     ];
 
     /**
@@ -43,5 +44,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the membership type that owns the user.
+     */
+    public function membershipType()
+    {
+        return $this->belongsTo(MembershipType::class);
     }
 }

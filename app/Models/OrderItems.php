@@ -14,7 +14,9 @@ class OrderItems extends Model
     protected $fillable = [
         'order_id',
         'product_id',
-        'product_price',
+        'product_original_price',
+        'discount',
+        'product_price_after_discount',
         'quantity',
         'sum',
     ];

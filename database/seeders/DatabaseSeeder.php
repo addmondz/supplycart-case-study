@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\MembershipType;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Faker\Factory as FakerFactory;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,17 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
         $this->call([
+            MembershipTypesTableSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductSeeder::class,
         ]);
+
+        $faker = FakerFactory::create();
+
+        // Get all membership types
+        $membershipTypes = MembershipType::all();
+
+        foreach ($membershipTypes as $membershipType) {
+            User::factory()->create([
+                'name' => $faker->name,
+                'email' => strtolower($membershipType->name) . '_user@email.com',
+                'membership_type_id' => $membershipType->id,
+                'password' => Hash::make('12345678'),
+            ]);
+        }
     }
 }

@@ -36,7 +36,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <div class="">$ {{ formatNumber(order.total_price) }}</div>
+                                <div class="">$ {{ formatPrice(order.total_price) }}</div>
                             </div>
                         </div>
                     </div>
@@ -91,6 +91,7 @@ import moment from 'moment';
 import AngleDown from '@/Components/Icons/AngleDown.vue';
 import AngleUp from '@/Components/Icons/AngleUp.vue';
 import OrderListProductTemplate from '@/Components/OrderListProductTemplate.vue';
+import { formatPrice } from '@/Helpers/helpers.js';
 
 const props = defineProps({
     order: {
@@ -100,10 +101,6 @@ const props = defineProps({
 });
 
 const showDetails = ref(false);
-
-const formatNumber = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
 
 const formatDate = (date) => {
     return moment(date).format('DD-MM-YYYY');

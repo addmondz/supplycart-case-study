@@ -32,7 +32,7 @@
                             <span class="text-lg inline-block"> Item(s)</span>
                         </h6>
                         <h6 class="font-manrope font-semibold text-3xl w-100">
-                            <span class="text-lg inline-block mr-2">Item Total: </span> ${{ formatNumber(itemTotal) }}
+                            <span class="text-lg inline-block mr-2">Item Total: </span> ${{ formatPrice(itemTotal) }}
                         </h6>
                     </div>
                     <div class="p-2 flex justify-end items-center">
@@ -57,12 +57,12 @@ import { Head } from '@inertiajs/vue3';
 import CartListTemplate from '@/Components/CartListTemplate.vue';
 import Swal from 'sweetalert2';
 import NotFound from '@/Components/Icons/NotFound.vue';
+import { formatPrice, apiBaseUrl, getPriceAfterDiscount, formatNumberToTwoDecimals } from '@/Helpers/helpers.js';
 
 const cartData = ref([]);
 const error = ref(null);
 const selectedCarts = ref([]);
 const itemTotal = ref(0);
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const apiUrl = apiBaseUrl + 'api/cart';
 
 const fetchProducts = async () => {
@@ -99,15 +99,9 @@ const handleQuantityUpdated = (cartId, newQuantity) => {
 
 const calculateItemTotal = () => {
     itemTotal.value = selectedCarts.value.reduce((total, { product: { price }, quantity }) => {
-        // console.log(`Product price: ${price}, Quantity: ${quantity}`);
-        const itemTotal = parseFloat(price) * quantity;
-        return total + itemTotal;
+        let itemTotal = getPriceAfterDiscount(price, 'number') * quantity;
+        return formatNumberToTwoDecimals(total) + formatNumberToTwoDecimals(itemTotal);
     }, 0);
-};
-
-// Ensures 2 decimal places
-const formatNumber = (number) => {
-    return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 const createOrder = async () => {
@@ -126,6 +120,7 @@ const createOrder = async () => {
         await axios.post(apiBaseUrl + 'api/order', requestBody);
 
         fetchProducts();
+        itemTotal.value = 0;
         selectedCarts.value = [];
 
         Swal.fire({

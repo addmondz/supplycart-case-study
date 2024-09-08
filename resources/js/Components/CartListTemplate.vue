@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full flex flex-col justify-center order-last lg:order-none max-lg:mx-auto border p-10 rounded-xl overflow-hidden"
+    <div class="w-full flex flex-col justify-center order-last lg:order-none max-lg:mx-auto border p-10 rounded-xl overflow-hidden border-white hover:border-violet-600 transition-all duration-500"
         :class="[{ 'bg-slate-300': checked }, { 'bg-white': !checked }]">
         <div class="flex">
             <div class="flex justify-center items-center mr-10">
@@ -12,19 +12,28 @@
                 <h2 class="mb-2 font-manrope font-bold text-3xl leading-10 text-gray-900 capitalize break-words">
                     {{ product.name }}
                 </h2>
-                <div class="flex-auto">
-                    <!-- takes up the vertical space -->
-                </div>
-                <div class="flex flex-col sm:flex-row sm:items-center mb-6">
-                    <h6 class="font-manrope font-semibold text-lg leading-9 text-gray-900 pr-5 mr-5">
-                        ${{ formatNumber(product.price) }}
+                <div class="flex flex-col sm:flex-row items-bottom justify-start mb-6">
+                    <h6 class="font-manrope font-semibold text-2xl leading-9 text-gray-900 pr-5 mr-5">
+                        <span v-if="$page.props.auth.user.membership_type_id != 1">
+                            <span v-if="storedUserData">
+                                <span class="line-through text-base text-gray-400">${{ formatPrice(product.price)
+                                    }}</span>
+                                <label v-if="storedUserData.membership_type"
+                                    :class="[storedUserData.membership_type.color ?? '']"
+                                    class="inline-block font-medium text-sm bg-gray-200 rounded-lg px-3 py-1 ml-2">
+                                    {{ storedUserData.membership_type.discount }} % OFF
+                                </label>
+                                <br>
+                            </span>
+                        </span>
+                        ${{ getPriceAfterDiscount(product.price) }}
                     </h6>
                 </div>
                 <div class="block w-full">
                     <div class="flex grid md:grid-cols-2">
                         <div class="flex align-bottom items-end w-100">
                             <h6 class="font-manrope font-semibold text-2xl text-gray-900 pr-5 mr-5 w-100">
-                                <span class="text-lg inline-block mr-2">Item Total: </span> ${{ formatNumber(itemTotal)
+                                <span class="text-lg inline-block mr-2">Item Total: </span> ${{ formatPrice(itemTotal)
                                 }}
                             </h6>
                         </div>
@@ -61,6 +70,7 @@
 import { ref, computed, defineProps, watch, defineEmits } from 'vue';
 import axios from 'axios';
 import Checkbox from '@/Components/Checkbox.vue';
+import { formatPrice, apiBaseUrl, storedUserData, getPriceAfterDiscount } from '@/Helpers/helpers.js';
 
 const props = defineProps({
     cart: {
@@ -70,14 +80,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits();
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const product = ref(props.cart.product);
 const productCount = ref(props.cart.quantity);
 const checked = ref(false);
 
 const itemTotal = computed(() => {
-    const total = productCount.value * props.cart.product.price;
-    return total.toFixed(2);
+    const total = getPriceAfterDiscount(props.cart.product.price, 'number') * productCount.value;
+
+    return total;
 });
 
 const increaseCount = () => {
@@ -86,10 +96,6 @@ const increaseCount = () => {
 
 const decreaseCount = () => {
     productCount.value > 1 ? productCount.value-- : productCount.value = 1;
-};
-
-const formatNumber = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 watch(productCount, () => {
