@@ -56,4 +56,4 @@ const getPriceAfterDiscount = (price, returnFormat = 'string') => {
 };
 
 // Exporting functions
-export { fetchUserDetails, formatPrice, apiBaseUrl, storedUserData, getPriceAfterDiscount, convertStringToNumber, formatNumberToTwoDecimals };
+export { fetchUserDetails, formatPrice, apiBaseUrl, getPriceAfterDiscount, convertStringToNumber, formatNumberToTwoDecimals };

@@ -70,7 +70,7 @@
 import { ref, computed, defineProps, watch, defineEmits } from 'vue';
 import axios from 'axios';
 import Checkbox from '@/Components/Checkbox.vue';
-import { formatPrice, apiBaseUrl, storedUserData, getPriceAfterDiscount } from '@/Helpers/helpers.js';
+import { formatPrice, apiBaseUrl, getPriceAfterDiscount } from '@/Helpers/helpers.js';
 
 const props = defineProps({
     cart: {
@@ -79,6 +79,7 @@ const props = defineProps({
     },
 });
 
+const storedUserData = JSON.parse(sessionStorage.getItem('userData')) || {};
 const emit = defineEmits();
 const product = ref(props.cart.product);
 const productCount = ref(props.cart.quantity);
