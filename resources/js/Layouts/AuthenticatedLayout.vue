@@ -30,6 +30,8 @@ const loadUserData = async () => {
 
 const logout = () => {
     sessionStorage.clear();
+    localStorage.clear();
+    sessionStorage.removeItem('userData');
 };
 
 onMounted(loadUserData);
